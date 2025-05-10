@@ -19,6 +19,8 @@ export const extractData = async (
       logger: (m) => console.log(m),
     });
 
+    console.log("result : ", result)
+
     return {
       text: result.data.text,
       confidence: result.data.confidence,

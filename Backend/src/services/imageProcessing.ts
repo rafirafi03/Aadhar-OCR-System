@@ -11,9 +11,6 @@ export const analyzeImages = async (
       extractData(backImageBuffer),
     ]);
 
-    console.log("frontData in service:", frontData);
-    console.log("backData in service:", backData);
-
     return combineResults(frontData, backData);
   } catch (error) {
     console.error("Error analyzing images:", error);
