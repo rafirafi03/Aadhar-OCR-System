@@ -1,5 +1,12 @@
-// src/components/common/ButtonComponent.jsx
-const ActionButton = ({ onClick, children, disabled = false }) => {
+import type { ReactNode } from "react";
+
+interface ActionButtonProps {
+  onClick: () => void;
+  children: ReactNode;
+  disabled?: boolean;
+}
+
+const ActionButton: React.FC<ActionButtonProps> = ({ onClick, children, disabled = false }) => {
   return (
     <button
       onClick={onClick}
