@@ -1,6 +1,5 @@
 import Tesseract from "tesseract.js";
 import { AadhaarFields } from "../types/AadharFields";
-import { preprocessImage } from "./preProcessImage";
 import { parseFields } from "./parseFields";
 
 export interface ExtractedData {
@@ -13,7 +12,7 @@ export const extractData = async (
   imageBuffer: Buffer
 ): Promise<ExtractedData> => {
   try {
-    const processedBuffer = await preprocessImage(imageBuffer);
+    const processedBuffer = imageBuffer;
 
     const result = await Tesseract.recognize(processedBuffer, "eng", {
       logger: (m) => console.log(m),
