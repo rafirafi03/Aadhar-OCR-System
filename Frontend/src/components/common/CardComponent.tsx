@@ -1,12 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface UploadCardProps {
   title: string;
   onFileChange: (file: File | null) => void;
+  file: File | null;
 }
 
-const UploadCard: React.FC<UploadCardProps> = ({ title, onFileChange }) => {
+const UploadCard: React.FC<UploadCardProps> = ({ title, onFileChange, file }) => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!file) {
+      setPreviewUrl(null); // Clear preview if file is reset from parent
+    } else {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewUrl(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  }, [file]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];

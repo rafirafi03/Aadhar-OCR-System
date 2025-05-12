@@ -15,18 +15,21 @@ const AadhaarUpload = () => {
     if (!frontFile || !backFile) return;
     try {
       const formData = new FormData();
-
       formData.append("frontImage", frontFile);
       formData.append("backImage", backFile);
 
       const res = await parseAadhar(formData).unwrap();
-
-      console.log("res data extractedfielddddddd",res?.data)
-
+      console.log("res data extractedfielddddddd", res?.data);
       setParsedDetails(res?.data?.combined?.extractedFields);
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleReset = () => {
+    setFrontFile(null);
+    setBackFile(null);
+    setParsedDetails({});
   };
 
   return (
@@ -41,6 +44,7 @@ const AadhaarUpload = () => {
             <UploadCard
               title="Aadhaar Front"
               onFileChange={(file: File | null) => setFrontFile(file)}
+              file={frontFile}
             />
           </div>
 
@@ -48,16 +52,21 @@ const AadhaarUpload = () => {
             <UploadCard
               title="Aadhaar Back"
               onFileChange={(file: File | null) => setBackFile(file)}
+              file={backFile}
             />
           </div>
 
           <div className="pt-2 flex justify-center">
-            <ActionButton
-              onClick={handleParse}
-              disabled={!frontFile || !backFile}
-            >
-              PARSE AADHAAR
-            </ActionButton>
+            {Object.keys(parsedDetails).length === 0 ? (
+              <ActionButton
+                onClick={handleParse}
+                disabled={!frontFile || !backFile}
+              >
+                PARSE AADHAAR
+              </ActionButton>
+            ) : (
+              <ActionButton onClick={handleReset}>RESET</ActionButton>
+            )}
           </div>
 
           {Object.keys(parsedDetails).length > 0 && (
