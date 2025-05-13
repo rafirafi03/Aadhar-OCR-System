@@ -10,7 +10,7 @@ const app: Express = express();
 // Middleware
 app.use(
     cors({
-        origin: process.env.FRONTEND_PORT || 'http://localhost:5173',
+        origin: process.env.FRONTEND_PORT || 'https://aadhar-ocr-system.vercel.app',
         credentials: true,
         methods: ["GET", "POST", "PUT", "DELETE"],
     })
