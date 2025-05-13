@@ -11,7 +11,7 @@ dotenv_1.default.config();
 const app = (0, express_1.default)();
 // Middleware
 app.use((0, cors_1.default)({
-    origin: process.env.FRONTEND_PORT || 'http://localhost:5173',
+    origin: process.env.FRONTEND_PORT || 'https://aadhar-ocr-system.vercel.app',
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
 }));

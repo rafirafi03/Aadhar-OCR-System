@@ -2,22 +2,36 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.checkIfAadhaar = void 0;
 const checkIfAadhaar = (text) => {
-    // Combine both sides' text
     const fullText = text.toLowerCase();
-    // Aadhaar usually has these identifiers
-    const aadhaarKeywords = [
-        'government of india',
-        'unique identification authority',
-        'aadhaar',
-        'uidai'
-    ];
-    // 12-digit Aadhaar number regex: 4 digits + space + 4 digits + space + 4 digits
+    // Aadhaar number: 4 digits + space + 4 digits + space + 4 digits
     const aadhaarNumberRegex = /\b\d{4}\s\d{4}\s\d{4}\b/;
-    // Check if any keyword exists
-    const hasKeyword = aadhaarKeywords.some(keyword => fullText.includes(keyword));
-    // Check for Aadhaar number pattern
+    // Keywords typically found on front of Aadhaar
+    const frontKeywords = [
+        'government of india',
+        'uidai',
+        'aadhaar',
+        'unique identification authority'
+    ];
+    // Keywords typically found on back of Aadhaar (e.g., address or barcode-related text)
+    const backKeywords = [
+        'year of birth',
+        'male',
+        'female',
+        'care of',
+        'c/o',
+        'address',
+        'pin code',
+        'pincode',
+        'dob'
+    ];
     const hasAadhaarNumber = aadhaarNumberRegex.test(fullText);
-    // Return true only if both checks pass
-    return hasKeyword && hasAadhaarNumber;
+    const hasFrontKeyword = frontKeywords.some(keyword => fullText.includes(keyword));
+    const hasBackKeyword = backKeywords.some(keyword => fullText.includes(keyword));
+    // Aadhaar is valid if either:
+    // - Front: number + front keywords
+    // - Back: just back keywords (number may not appear)
+    const isFrontSide = hasAadhaarNumber && hasFrontKeyword;
+    const isBackSide = hasBackKeyword;
+    return isFrontSide || isBackSide;
 };
 exports.checkIfAadhaar = checkIfAadhaar;
