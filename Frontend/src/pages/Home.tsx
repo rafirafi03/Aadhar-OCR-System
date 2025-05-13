@@ -4,25 +4,50 @@ import ActionButton from "../components/common/ButtonComponent";
 import ParsedDetails from "../components/common/ParsedDetailsComponent";
 import { useParseAadhaarImageMutation } from "../store/slices/apiSlices";
 import type { AadhaarFields } from "../types/aadharTypes";
+import { toast } from "react-toastify";
 
 const AadhaarUpload = () => {
   const [parseAadhar] = useParseAadhaarImageMutation();
   const [frontFile, setFrontFile] = useState<File | null>(null);
   const [backFile, setBackFile] = useState<File | null>(null);
   const [parsedDetails, setParsedDetails] = useState<AadhaarFields>({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleParse = async () => {
     if (!frontFile || !backFile) return;
+
+    setIsLoading(true);
+
     try {
       const formData = new FormData();
       formData.append("frontImage", frontFile);
       formData.append("backImage", backFile);
 
       const res = await parseAadhar(formData).unwrap();
-      console.log("res data extractedfielddddddd", res?.data);
+      if (res.success) {
+        toast.success("parsed successfully");
+      }
       setParsedDetails(res?.data?.combined?.extractedFields);
     } catch (error) {
-      console.log(error);
+      let errorMessage = "Something went wrong";
+
+      if (typeof error === "object" && error !== null) {
+        if (
+          "data" in error &&
+          typeof error.data === "object" &&
+          error.data !== null &&
+          "message" in error.data
+        ) {
+          errorMessage = (error.data as { message: string }).message;
+        } else if ("message" in error && typeof error.message === "string") {
+          errorMessage = error.message;
+        }
+      }
+
+      toast.error(errorMessage);
+      console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -57,7 +82,14 @@ const AadhaarUpload = () => {
           </div>
 
           <div className="pt-2 flex justify-center">
-            {Object.keys(parsedDetails).length === 0 ? (
+            {isLoading ? (
+              <div
+                className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full border-t-transparent border-gray-600"
+                role="status"
+              >
+                <span className="sr-only">Loading...</span>
+              </div>
+            ) : Object.keys(parsedDetails).length === 0 ? (
               <ActionButton
                 onClick={handleParse}
                 disabled={!frontFile || !backFile}
