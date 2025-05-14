@@ -1,39 +1,20 @@
 export const checkIfAadhaar = (text: string): boolean => {
   const fullText = text.toLowerCase();
 
-  // Aadhaar number: 4 digits + space + 4 digits + space + 4 digits
+  // Aadhaar number format: 4 digits + space + 4 digits + space + 4 digits
   const aadhaarNumberRegex = /\b\d{4}\s\d{4}\s\d{4}\b/;
 
-  // Keywords typically found on front of Aadhaar
-  const frontKeywords = [
-    'government of india',
+  // Aadhaar-specific unique keywords
+  const aadhaarKeywords = [
     'uidai',
     'aadhaar',
-    'unique identification authority'
-  ];
-
-  // Keywords typically found on back of Aadhaar (e.g., address or barcode-related text)
-  const backKeywords = [
-    'year of birth',
-    'male',
-    'female',
-    'care of',
-    'c/o',
-    'address',
-    'pin code',
-    'pincode',
-    'dob'
+    'unique identification authority of india',
+    'government of india'
   ];
 
   const hasAadhaarNumber = aadhaarNumberRegex.test(fullText);
-  const hasFrontKeyword = frontKeywords.some(keyword => fullText.includes(keyword));
-  const hasBackKeyword = backKeywords.some(keyword => fullText.includes(keyword));
+  const hasAadhaarKeyword = aadhaarKeywords.some(keyword => fullText.includes(keyword));
 
-  // Aadhaar is valid if either:
-  // - Front: number + front keywords
-  // - Back: just back keywords (number may not appear)
-  const isFrontSide = hasAadhaarNumber && hasFrontKeyword;
-  const isBackSide = hasBackKeyword;
-
-  return isFrontSide || isBackSide;
+  // Return true if Aadhaar number or Aadhaar-specific keyword is found
+  return hasAadhaarNumber || hasAadhaarKeyword;
 };
